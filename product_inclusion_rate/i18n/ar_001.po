@@ -1,0 +1,8 @@
+# Translation for Arabic (ar_001)
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ar_001\n"
+
+msgid "Inclusion Rate"
+msgstr "معدل الاضافه"
