@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit the sale order report template -->
+    <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        <!-- Add a header for Product Weight -->
+        <!-- <xpath expr="//thead/tr/th[@name='th_quantity']" position="before">
+            <th class="text-end">Weight</th>
+        </xpath> -->
+
+        <!-- Add a header for Product Weight -->
+        <!-- remove the weight head for new request -->
+        <!-- <xpath expr="//thead/tr/th[@name='th_quantity']" position="after">
+            <th class="text-end">Total Weight</th>
+        </xpath> -->
+
+
+
+        <!-- Add Product Weight field in the product line -->
+        <!-- <xpath expr="//tbody[@class='sale_tbody']//td[@name='td_quantity']" position="before">
+            <td class="text-end"> -->
+                <!-- <span t-esc="line.product_id.weight" t-if="line.product_id.weight"/> -->
+                <!-- <span t-esc="line.product_id.weight" t-if="line.product_id.weight" t-options="{'widget': 'float', 'precision': 2}"/>
+                <t t-if="not line.product_id.weight">-</t>
+            </td>
+        </xpath> -->
+
+        <!-- Remove the Product UoM -->
+        <xpath expr="//tbody[hasclass('sale_tbody')]//td[@name='td_quantity']/span[@t-field='line.product_uom']" position="replace">
+        </xpath>
+
+        <!-- Remove tax column from header -->
+        <xpath expr="//thead/tr/th[@name='th_taxes']" position="replace">
+        </xpath>
+
+        <!-- Remove tax data from rows -->
+        <xpath expr="//tbody[hasclass('sale_tbody')]//td[@name='td_taxes']" position="replace">
+        </xpath>
+
+        <!-- Add Product Weight field in the product line -->
+        <!-- <xpath expr="//tbody[@class='sale_tbody']//td[@name='td_quantity']" position="after">
+            <td class="text-end">
+                <span t-esc="line.product_id.weight * line.product_uom_qty" t-if="line.product_id.weight" t-options="{'widget': 'float', 'precision': 2}"/>
+                <t t-if="not line.product_id.weight">-</t>
+            </td>
+        </xpath> -->
+
+        <!-- Add the summary section after the total summary -->
+        <xpath expr="//div[@class='clearfix' and @name='so_total_summary']" position="after">
+            <div class="mt-4">
+                <h5>Order Summary</h5>
+                <p>
+                    <strong>Total number of Items:</strong>
+                    <t t-esc="len(set(line.product_id.id for line in doc.order_line if line.product_id))"/>
+                </p>
+                <p>
+                    <strong>Total product quantity:</strong>
+                    <t t-esc="sum(line.product_uom_qty for line in doc.order_line)"/>
+                </p>
+                <p>
+                    <strong>Total weight:</strong>
+                    <t t-esc="sum(line.product_id.weight * line.product_uom_qty for line in doc.order_line if line.product_id.weight)" t-options="{'widget': 'float', 'precision': 2}"/> kg
+                </p>
+            </div>
+        </xpath>
+
+
+
+                <!-- Modify table styling for single borders -->
+
+       <xpath expr="//table[hasclass('table')]" position="replace">
+            <table class="table table-sm" style="border-collapse: collapse !important; width: 100% !important;">
+                <thead>
+                    <tr>
+                        <th name="th_description" style="border: 1px solid #ddd !important; padding: 8px !important;">Description</th>
+                        <th name="th_quantity" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">Quantity</th>
+                        <th name="th_priceunit" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">Unit Price</th>
+                        <th name="th_subtotal" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="sale_tbody">
+                    <t t-foreach="doc.order_line" t-as="line">
+                        <tr>
+                            <td name="td_name" style="border: 1px solid #ddd !important; padding: 8px !important;">
+                                <span t-field="line.name"/>
+                            </td>
+                            <td name="td_quantity" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">
+                                <span t-field="line.product_uom_qty"/>
+                            </td>
+                            <td name="td_priceunit" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">
+                                <span t-field="line.price_unit"/>
+                            </td>
+                            <td name="td_subtotal" class="text-end" style="border: 1px solid #ddd !important; padding: 8px !important;">
+                                <span t-field="line.price_subtotal"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+
+
+
+
+
+        <!-- replace the address block -->
+        
+
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="address">
+                <div style="margin-bottom: 20px; line-height: 1.5; margin-left: 0; padding-left: 0; text-align: left;">
+                    <div><strong>Client Name:</strong> <span t-field="doc.partner_id.name"/></div>
+                    <div><strong>Contact Person:</strong> <span t-field="doc.partner_id.child_ids[0].name" t-if="doc.partner_id.child_ids"/></div>
+                    <div><strong>Address:</strong> <span t-field="doc.partner_id.street"/> <span t-field="doc.partner_id.street2" t-if="doc.partner_id.street2"/></div>
+                    <div><strong>City:</strong> <span t-field="doc.partner_id.city"/></div>
+                    <p t-if="doc.partner_id.vat" style="margin-left: 0; padding-left: 0;">
+                        <t t-if="doc.company_id.account_fiscal_country_id.vat_label" t-out="doc.company_id.account_fiscal_country_id.vat_label"/>
+                        <t t-else="">Tax ID</t>: <span t-field="doc.partner_id.vat"/>
+                    </p>
+                </div>
+            </t>
+        </xpath>
+        
+         <!-- <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="address">
+                <div style="margin-bottom: 20px; line-height: 1.5;">
+                    <div><strong>Client Name:</strong> <span t-field="doc.partner_id.name"/></div>
+                    <div><strong>Contact Person:</strong> <span t-field="doc.partner_id.child_ids[0].name" t-if="doc.partner_id.child_ids"/></div>
+                    <div><strong>Address:</strong> <span t-field="doc.partner_id.street"/> <span t-field="doc.partner_id.street2" t-if="doc.partner_id.street2"/></div>
+                    <div><strong>City:</strong> <span t-field="doc.partner_id.city"/></div>
+                    <p t-if="doc.partner_id.vat">
+                        <t t-if="doc.company_id.account_fiscal_country_id.vat_label" t-out="doc.company_id.account_fiscal_country_id.vat_label"/>
+                        <t t-else="">Tax ID</t>: <span t-field="doc.partner_id.vat"/>
+                    </p>
+                </div>
+            </t>
+        </xpath> -->
+
+    </template>
+</odoo>

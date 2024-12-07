@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <odoo>
+        <!-- <record id="view_sale_order_line_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.line.form.inherit.product.weight</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_uom_qty']" position="before">
+                    <field name="product_weight" readonly="1"/>
+                    <field name="total_weight" readonly="1"/>
+                </xpath>
+            </field>
+        </record> -->
+
+        <record id="view_sale_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.product.weight</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='order_lines']//field[@name='order_line']/form/group/group" position="inside">
+                    <!-- Add product_weight before product_uom_qty -->
+                    <field name="product_weight" widget="float" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+
+    </odoo>

@@ -1,0 +1,30 @@
+<odoo>
+    <template id="report_delivery_document_inherit_add_weight" inherit_id="stock.report_delivery_document">
+        <xpath expr="//table[@name='stock_move_table']/thead/tr/th[@name='th_sm_product']" position="after">
+                <th class="text-right">Weight</th>
+        </xpath>
+            <xpath expr="//table[@name='stock_move_table']/tbody/tr/td[1]" position="after">
+                    <td class="text-right">
+                        <span t-field="move.product_weight"/>
+                    </td>
+            </xpath>
+            <xpath expr="//table[@name='stock_move_line_table']/thead/tr/th[1]" position="after">
+                    <th class="text-right">Weight</th>
+            </xpath>
+            <xpath expr="//div[hasclass('page')]/table[2]" position="after">
+                <group style="margin-left: 75%;">
+                    <group>
+                        <strong>Total Weight</strong>
+                        <span t-esc="o.total_weight"/>
+                    </group>
+                </group>
+            </xpath>
+    </template>
+    <template id="stock_report_delivery_package_section_line_add_product_weight" inherit_id="stock.stock_report_delivery_package_section_line">
+        <xpath expr="//td[1]" position="after">
+            <td class="text-right">
+                <span t-field="move_line.product_weight"/>
+            </td>
+        </xpath>
+    </template>
+</odoo>

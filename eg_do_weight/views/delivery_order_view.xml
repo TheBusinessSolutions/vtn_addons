@@ -1,0 +1,22 @@
+<odoo>
+    <record id="picking_extended_add_weight_form" model="ir.ui.view">
+        <field name="name">stock.picking.form.for.do.weight</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[2]" position="inside">
+                <field name="print_on_picking_operation" invisible="picking_type_code not in ['outgoing', 'incoming']"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="after">
+                <field name="product_weight" column_invisible="parent.picking_type_code not in ['outgoing', 'incoming']"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']" position="inside">
+                <group>
+                    <group class="text-right">
+                        <field name="total_weight" invisible="picking_type_code not in ['outgoing', 'incoming']"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
